@@ -1,0 +1,27 @@
+Mass transportation problem: C, a, b.  The default a = 1, b = 1;
+1. The file C,a,b for mass transportation problem are generated using matlab storing in a binary file in row-major order. For example,
+m = 1024;
+n = m;
+C = rand(m,n);
+fid = fopen([int2str(n) 'C.dat'],'w');
+fwrite(fid,[m,n],'int');
+fwrite(fid,C','float');
+fclose(fid);
+
+2. compile cuda code and tune parameters
+nvcc -o badmm_mt badmm_mt.cu badmm_kernel.cu -lcublas -arch sm_13
+nvprof ./badmm_mt dim_file_name rho max_iteration tolerance_stop_badmm num_steps_print save_output
+a. dim_file_name: the name of cost matrix is stored in binary with name dim*1024C.dat. The name of a,b files are dim*1024a.dat and dim*1024b.dat
+b. rho (float): the parameter of badmm
+c. max_iteration (int): the maximum number of iterations of badmm
+d. tol (float): the stopping condition of primal and dual residuals of badmm. If less than tol, badmm will stop.
+e. num_steps_print (int): print intermediate results every num_steps_print step. If num_steps_print = 0, no print. 
+f. save_output: write the final result of mass transportation into a binary file named X_out.dat
+The default values will be chosen if setting them to zero or no specification
+
+
+3. read X_out to matlab
+fid = fopen('X_out.dat','r');
+X = fread(fid,[n,m],'float');
+fclose(fid);
+X = X';
