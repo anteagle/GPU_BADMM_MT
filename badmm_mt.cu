@@ -41,13 +41,13 @@ typedef struct BADMM_massTrans
     bool SAVEFILE;
 }BADMM_massTrans;
 
-void matInit(float* X, unsigned int size, float value);
+void matInit(float* &X, unsigned int size, float value);
 
 /*********************************************
 Bregman ADMM for mass transportation problem
 All matrices are in row major order
 **********************************************/
-void gpuBADMM_MT( BADMM_massTrans* badmm_mt, ADMM_para* badmmpara, GPUInfo* gpu_info)
+void gpuBADMM_MT( BADMM_massTrans* &badmm_mt, ADMM_para* &badmmpara, GPUInfo* gpu_info)
 {
     float *X, *Z, *Y;                   // host
 
@@ -409,7 +409,7 @@ int main(const int argc, const char **argv)
 }
 
 
-void matInit(float* X, unsigned int size, float value)
+void matInit(float* &X, unsigned int size, float value)
 {
     for ( int i = 0 ; i < size ; i++ )
         X[i] = value;
